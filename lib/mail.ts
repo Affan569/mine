@@ -1,23 +1,40 @@
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-export async function sendMail(name: string, email: string, message: string) {
+export async function sendMail(name: string, email: string, message: string): Promise<boolean> {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
+  const resendKey = process.env.RESEND_API_KEY;
 
   if (!user || !pass) {
     console.error("❌ Email Error: Missing EMAIL_USER or EMAIL_PASS environment variables.");
-    return;
+    if (resendKey) {
+      try {
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+          from: "Portfolio <onboarding@resend.dev>",
+          to: "affanhussain.developer@gmail.com",
+          replyTo: email,
+          subject: `[Portfolio Inquiry] ${name}`,
+          html: `<div><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p>${message}</p></div>`,
+        });
+        return true;
+      } catch (e) {
+        console.error("❌ Resend fallback error:", e);
+      }
+    }
+    return false;
   }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user,
-      pass,
-    },
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: { user, pass },
   });
 
   try {
+    await transporter.verify();
     await transporter.sendMail({
       from: `"Portfolio Contact" <${user}>`,
       to: "affanhussain.developer@gmail.com",
@@ -35,7 +52,24 @@ export async function sendMail(name: string, email: string, message: string) {
         </div>
       `,
     });
+    return true;
   } catch (error) {
     console.error("❌ Error sending email:", error);
+    if (resendKey) {
+      try {
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+          from: "Portfolio <onboarding@resend.dev>",
+          to: "affanhussain.developer@gmail.com",
+          replyTo: email,
+          subject: `[Portfolio Inquiry] ${name}`,
+          html: `<div><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p>${message}</p></div>`,
+        });
+        return true;
+      } catch (e) {
+        console.error("❌ Resend fallback error:", e);
+      }
+    }
   }
+  return false;
 }
