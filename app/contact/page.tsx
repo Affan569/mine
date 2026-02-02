@@ -1,42 +1,21 @@
-import { readJSON, writeJSON, Message } from "@/lib/storage";
-import { sendMail } from "@/lib/mail";
-import { randomUUID } from "crypto";
-import { redirect } from "next/navigation";
+ "use client";
+import { useState } from "react";
 import { ScrollReveal } from "../components/ScrollReveal";
 
-export const runtime = "nodejs";
+export default function Contact() {
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [mailStatus, setMailStatus] = useState<"ok" | "fail" | undefined>(undefined);
 
-async function submit(formData: FormData) {
-  "use server";
-  const name = String(formData.get("name") || "");
-  const email = String(formData.get("email") || "");
-  const message = String(formData.get("message") || "");
-  if (!name || !email || !message) {
-    return;
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const res = await fetch("/api/contact", { method: "POST", body: fd }).catch(() => null);
+    const json = await res?.json().catch(() => ({ ok: false }));
+    setShowSuccess(true);
+    setMailStatus(json?.mail ? "ok" : "fail");
+    form.reset();
   }
-  try {
-    const messages = readJSON<Message[]>("messages.json");
-    const item: Message = {
-      id: randomUUID(),
-      name,
-      email,
-      message,
-      createdAt: new Date().toISOString(),
-    };
-    messages.unshift(item);
-    writeJSON("messages.json", messages);
-  } catch {}
-  try {
-    const ok = await sendMail(name, email, message);
-    redirect(`/contact?success=true&mail=${ok ? "ok" : "fail"}`);
-  } catch {}
-  redirect(`/contact?success=true&mail=fail`);
-}
-
-export default async function Contact(props: { searchParams: Promise<{ success?: string; mail?: string }> }) {
-  const searchParams = await props.searchParams;
-  const showSuccess = searchParams.success === "true";
-  const mailStatus = searchParams.mail;
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -129,7 +108,7 @@ export default async function Contact(props: { searchParams: Promise<{ success?:
           {/* Form */}
           <div className="lg:col-span-2">
             <ScrollReveal width="100%" delay={0.2}>
-              <form action={submit} className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 p-8 shadow-xl backdrop-blur-md">
+              <form onSubmit={onSubmit} className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 p-8 shadow-xl backdrop-blur-md">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Name</label>
