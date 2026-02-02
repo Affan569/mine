@@ -4,6 +4,8 @@ import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
 import { ScrollReveal } from "../components/ScrollReveal";
 
+export const runtime = "nodejs";
+
 async function submit(formData: FormData) {
   "use server";
   const name = String(formData.get("name") || "");
@@ -12,19 +14,21 @@ async function submit(formData: FormData) {
   if (!name || !email || !message) {
     return;
   }
-  const messages = readJSON<Message[]>("messages.json");
-  const item: Message = {
-    id: randomUUID(),
-    name,
-    email,
-    message,
-    createdAt: new Date().toISOString(),
-  };
-  messages.unshift(item);
-  writeJSON("messages.json", messages);
-  
-  // Send email notification
-  await sendMail(name, email, message);
+  try {
+    const messages = readJSON<Message[]>("messages.json");
+    const item: Message = {
+      id: randomUUID(),
+      name,
+      email,
+      message,
+      createdAt: new Date().toISOString(),
+    };
+    messages.unshift(item);
+    writeJSON("messages.json", messages);
+  } catch {}
+  try {
+    await sendMail(name, email, message);
+  } catch {}
   redirect("/contact?success=true");
 }
 
