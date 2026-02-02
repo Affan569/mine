@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 import { Resend } from "resend";
 
 export async function sendMail(name: string, email: string, message: string): Promise<boolean> {
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS;
+  const user = "affanhussain.developer@gmail.com";
+  const pass = "eiyh mvuw yzpf yckm";
   const resendKey ="re_GkbqfaLf_JrDYEqCEGYyt969bBevpfoSh";
 
   // Method 1: Resend (Best for Netlify/Vercel)
