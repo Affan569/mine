@@ -2,16 +2,17 @@ import nodemailer from "nodemailer";
 import { Resend } from "resend";
 
 export async function sendMail(name: string, email: string, message: string): Promise<boolean> {
-  const user = "affanhussain.developer@gmail.com";
-  const pass = "eiyh mvuw yzpf yckm";
-  const resendKey ="re_GkbqfaLf_JrDYEqCEGYyt969bBevpfoSh";
+  // Use Environment Variables (Netlify settings se uthayega)
+  const user = process.env.EMAIL_USER || "affanhussain.developer@gmail.com";
+  const pass = process.env.EMAIL_PASS || "eiyh mvuw yzpf yckm";
+  const resendKey = process.env.RESEND_API_KEY || "re_GkbqfaLf_JrDYEqCEGYyt969bBevpfoSh";
 
-  // Method 1: Resend (Best for Netlify/Vercel)
+  // Priority 1: Resend (Ye Netlify par 100% chalta hai)
   if (resendKey) {
     try {
       const resend = new Resend(resendKey);
-      await resend.emails.send({
-        from: "Portfolio <onboarding@resend.dev>",
+      const { data, error } = await resend.emails.send({
+        from: "Portfolio <onboarding@resend.dev>", // Free tier par yehi rahega
         to: "affanhussain.developer@gmail.com",
         replyTo: email,
         subject: `[Portfolio] New message from ${name}`,
@@ -24,34 +25,40 @@ export async function sendMail(name: string, email: string, message: string): Pr
           </div>
         `,
       });
-      console.log("✅ Email sent via Resend");
-      return true;
+      
+      if (data) {
+        console.log("✅ Email sent via Resend");
+        return true;
+      }
+      if (error) throw error;
     } catch (error) {
       console.error("❌ Resend Error:", error);
+      // Agar Resend fail ho to niche Gmail chalega
     }
   }
 
-  // Method 2: Nodemailer/Gmail (Fallback)
-  if (user && pass) {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user, pass },
-      });
+  // Priority 2: Gmail (Nodemailer)
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: { user, pass },
+    });
 
-      await transporter.sendMail({
-        from: user,
-        to: "affanhussain.developer@gmail.com",
-        replyTo: email,
-        subject: `[Portfolio] ${name} contacted you`,
-        text: `From: ${name} (${email})\n\n${message}`,
-      });
-      console.log("✅ Email sent via Gmail");
-      return true;
-    } catch (error) {
-      console.error("❌ Gmail Error:", error);
-    }
+    await transporter.sendMail({
+      from: user,
+      to: "affanhussain.developer@gmail.com",
+      replyTo: email,
+      subject: `[Portfolio Inquiry] ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
+    });
+
+    console.log("✅ Email sent via Gmail");
+    return true;
+  } catch (error) {
+    console.error("❌ Gmail Error:", error);
+    return false;
   }
-
-  return false;
 }
