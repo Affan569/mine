@@ -56,25 +56,6 @@ export default function Contact() {
             </div>
           </ScrollReveal>
         )}
-        {showSuccess && mailStatus === "fail" && (
-          <ScrollReveal width="100%">
-            <div className="mb-8 rounded-xl bg-red-50/80 dark:bg-red-900/20 p-6 border border-red-200 dark:border-red-800 backdrop-blur-sm shadow-sm animate-fade-in">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 bg-red-100 dark:bg-red-800/50 rounded-full p-2">
-                  <svg className="h-6 w-6 text-red-600 dark:text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10A8 8 0 11.001 10 8 8 0 0118 10zm-8 4a1 1 0 110-2 1 1 0 010 2zm1-7a1 1 0 10-2 0v4a1 1 0 102 0V7z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-red-800 dark:text-red-200">Message saved, email not sent</h3>
-                  <p className="text-sm text-red-700 dark:text-red-300">
-                    Your message is saved. Email delivery failed. We will still review your message.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Contact Info */}
