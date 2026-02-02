@@ -5,6 +5,7 @@ export async function sendMail(name: string, email: string, message: string): Pr
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
   const resendKey = process.env.RESEND_API_KEY;
+  const debug = process.env.EMAIL_DEBUG === "true";
 
   if (!user || !pass) {
     console.error("❌ Email Error: Missing EMAIL_USER or EMAIL_PASS environment variables.");
@@ -31,12 +32,14 @@ export async function sendMail(name: string, email: string, message: string): Pr
     port: 465,
     secure: true,
     auth: { user, pass },
+    logger: debug,
+    debug,
   });
 
   try {
     await transporter.verify();
     await transporter.sendMail({
-      from: `"Portfolio Contact" <${user}>`,
+      from: `${user}`,
       to: "affanhussain.developer@gmail.com",
       replyTo: email,
       subject: `[Portfolio Inquiry] ${name} - ${new Date().toLocaleTimeString()}`,
