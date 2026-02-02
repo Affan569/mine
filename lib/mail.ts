@@ -4,7 +4,7 @@ import { Resend } from "resend";
 export async function sendMail(name: string, email: string, message: string): Promise<boolean> {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS;
-  const resendKey = process.env.RESEND_API_KEY;
+  const resendKey ="re_GkbqfaLf_JrDYEqCEGYyt969bBevpfoSh";
 
   // Method 1: Resend (Best for Netlify/Vercel)
   if (resendKey) {
