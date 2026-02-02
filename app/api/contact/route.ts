@@ -1,43 +1,39 @@
 import { NextResponse } from "next/server";
 import { sendMail } from "@/lib/mail";
 
-// Netlify/Vercel support standard Node.js runtime
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  let name = "";
-  let email = "";
-  let message = "";
-
   try {
-    const ct = req.headers.get("content-type") || "";
-    if (ct.includes("application/json")) {
+    let name, email, message;
+
+    const contentType = req.headers.get("content-type") || "";
+    
+    if (contentType.includes("application/json")) {
       const body = await req.json();
       name = body.name;
       email = body.email;
       message = body.message;
     } else {
-      const fd = await req.formData();
-      name = String(fd.get("name") || "");
-      email = String(fd.get("email") || "");
-      message = String(fd.get("message") || "");
+      const formData = await req.formData();
+      name = formData.get("name");
+      email = formData.get("email");
+      message = formData.get("message");
     }
 
     if (!name || !email || !message) {
-      return NextResponse.json({ ok: false, error: "Missing fields" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "fields_missing" }, { status: 400 });
     }
 
-    // Email bheinjne ka process - isay AWAIT lazmi karain
-    const mailOk = await sendMail(name, email, message);
+    const isSent = await sendMail(String(name), String(email), String(message));
 
-    if (mailOk) {
-      return NextResponse.json({ ok: true, message: "Email sent successfully!" });
+    if (isSent) {
+      return NextResponse.json({ ok: true, mail: true });
     } else {
-      return NextResponse.json({ ok: false, error: "Mail failed to send" }, { status: 500 });
+      return NextResponse.json({ ok: false, error: "send_failed" }, { status: 500 });
     }
-
-  } catch (error: any) {
-    console.error("API Error:", error);
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  } catch (err: any) {
+    console.error("API Route Error:", err);
+    return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
   }
 }
