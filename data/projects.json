@@ -1,0 +1,63 @@
+[
+  {
+    "id": "d0082835-1207-4359-adab-80cb0840cb22",
+    "title": "All In one travellng website",
+    "description": "I developed a comprehensive travel website that allows travelers to book domestic and international tour packages as well as purchase essential travel products through a single, user-friendly platform.",
+    "url": "http://travelbuzz.host.adellya.my.id/?i=1",
+    "image": "/uploads/1769247232834-335f8cd7-13cf-4025-86ad-ca0bbbbde6b3-22.png",
+    "images": [
+      "/uploads/1769247232838-34298375-f168-4014-b98a-6096cbaa8ad5-11.png",
+      "/uploads/1769247232842-fd23d54e-becc-4b97-abff-885311ccaf87-22.png",
+      "/uploads/1769247232849-05373aad-a4e5-4eb1-b4b2-77f4c35ec859-33.png"
+    ],
+    "technologies": [
+      "PHP/Laravel",
+      "Html",
+      "css",
+      "js",
+      "Tailwind css."
+    ],
+    "createdAt": "2026-01-24T09:33:52.851Z"
+  },
+  {
+    "id": "f8def0b6-a1c7-428f-9e1c-e774249dc039",
+    "title": "Portfolio website",
+    "description": "A dynamic portfolio website built with PHP, showcasing modern web development skills, responsive design, and interactive features. The site highlights projects, technologies, and services, demonstrating proficiency in PHP, MySQL, HTML, CSS, and JavaScript, while providing a seamless user experience across devices.",
+    "url": "https://affanportfolio.host.adellya.my.id/",
+    "image": "/uploads/1769196031217-52359d54-2bb0-43e8-8ddf-077071f9ad4e-111.PNG",
+    "images": [
+      "/uploads/1769196031219-e3d7d461-ac2a-4cc1-b71a-25185e6c8c5a-111.PNG",
+      "/uploads/1769196031226-5bcdd1b7-d80f-457a-91bf-ee0a7b489d3e-222.PNG",
+      "/uploads/1769196031228-6b046a09-5d70-44ba-8629-2c7fe1a848be-333.PNG"
+    ],
+    "technologies": [
+      "PHP/Laravel",
+      "Html",
+      "css",
+      "js",
+      "Tailwind css."
+    ],
+    "createdAt": "2026-01-23T19:20:31.257Z"
+  },
+  {
+    "id": "c4d7f62b-5da4-4a5b-8efa-4c2b2d74a08e",
+    "title": "E-commerce Website",
+    "description": "Designed and developed a full-stack e-commerce web application with end-to-end functionality, including product browsing, secure card payment integration, order placement, and delivery handling. The project demonstrates real-world e-commerce workflows and a responsive, visually appealing user interface.",
+    "url": "http://zerothread.host.adellya.my.id/?i=1",
+    "image": "/uploads/1769194630994-cb5ac235-00e0-441a-a13c-e870344e9aea-1.PNG",
+    "images": [
+      "/uploads/1769194630996-cff22512-037e-4f7a-9e8e-7ecc5ea086f1-1.PNG",
+      "/uploads/1769194630998-602e64b7-ad65-43b8-af68-3e29728ecbd2-2.PNG",
+      "/uploads/1769194631008-8e9e8450-be4c-4b6c-badc-2f90896b9147-3.PNG",
+      "/uploads/1769194631010-4405de6a-4633-4a40-93ff-f4436103edfb-4.PNG"
+    ],
+    "technologies": [
+      "PHP/Laravel",
+      "Html",
+      "css",
+      "js",
+      "Tailwind css."
+    ],
+    "createdAt": "2026-01-23T18:57:11.014Z"
+  }
+]
