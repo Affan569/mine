@@ -1,21 +1,11 @@
- "use client";
-import { useState } from "react";
+"use client";
+import { useSearchParams } from "next/navigation";
 import { ScrollReveal } from "../components/ScrollReveal";
 
 export default function Contact() {
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [mailStatus, setMailStatus] = useState<"ok" | "fail" | undefined>(undefined);
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const fd = new FormData(form);
-    const res = await fetch("/api/contact", { method: "POST", body: fd }).catch(() => null);
-    const json = await res?.json().catch(() => ({ ok: false }));
-    setShowSuccess(true);
-    setMailStatus(json?.mail ? "ok" : "fail");
-    form.reset();
-  }
+  const search = useSearchParams();
+  const showSuccess = search.get("success") === "true";
+  const mailStatus = search.get("mail") as "ok" | "fail" | null;
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -108,7 +98,14 @@ export default function Contact() {
           {/* Form */}
           <div className="lg:col-span-2">
             <ScrollReveal width="100%" delay={0.2}>
-              <form onSubmit={onSubmit} className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 p-8 shadow-xl backdrop-blur-md">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                action="/contact?success=true"
+                className="rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 p-8 shadow-xl backdrop-blur-md"
+              >
+                <input type="hidden" name="form-name" value="contact" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Name</label>
