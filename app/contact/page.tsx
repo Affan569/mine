@@ -27,14 +27,16 @@ async function submit(formData: FormData) {
     writeJSON("messages.json", messages);
   } catch {}
   try {
-    await sendMail(name, email, message);
+    const ok = await sendMail(name, email, message);
+    redirect(`/contact?success=true&mail=${ok ? "ok" : "fail"}`);
   } catch {}
-  redirect("/contact?success=true");
+  redirect(`/contact?success=true&mail=fail`);
 }
 
-export default async function Contact(props: { searchParams: Promise<{ success?: string }> }) {
+export default async function Contact(props: { searchParams: Promise<{ success?: string; mail?: string }> }) {
   const searchParams = await props.searchParams;
   const showSuccess = searchParams.success === "true";
+  const mailStatus = searchParams.mail;
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -56,7 +58,7 @@ export default async function Contact(props: { searchParams: Promise<{ success?:
           </div>
         </ScrollReveal>
         
-        {showSuccess && (
+        {showSuccess && mailStatus !== "fail" && (
           <ScrollReveal width="100%">
             <div className="mb-8 rounded-xl bg-green-50/80 dark:bg-green-900/20 p-6 border border-green-200 dark:border-green-800 backdrop-blur-sm shadow-sm animate-fade-in">
               <div className="flex items-center">
@@ -69,6 +71,25 @@ export default async function Contact(props: { searchParams: Promise<{ success?:
                   <h3 className="text-lg font-medium text-green-800 dark:text-green-200">Message Sent!</h3>
                   <p className="text-sm text-green-700 dark:text-green-300">
                     Thanks for reaching out. I'll get back to you as soon as possible.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+        )}
+        {showSuccess && mailStatus === "fail" && (
+          <ScrollReveal width="100%">
+            <div className="mb-8 rounded-xl bg-red-50/80 dark:bg-red-900/20 p-6 border border-red-200 dark:border-red-800 backdrop-blur-sm shadow-sm animate-fade-in">
+              <div className="flex items-center">
+                <div className="flex-shrink-0 bg-red-100 dark:bg-red-800/50 rounded-full p-2">
+                  <svg className="h-6 w-6 text-red-600 dark:text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10A8 8 0 11.001 10 8 8 0 0118 10zm-8 4a1 1 0 110-2 1 1 0 010 2zm1-7a1 1 0 10-2 0v4a1 1 0 102 0V7z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-red-800 dark:text-red-200">Message saved, email not sent</h3>
+                  <p className="text-sm text-red-700 dark:text-red-300">
+                    Your message is saved. Email delivery failed. We will still review your message.
                   </p>
                 </div>
               </div>
